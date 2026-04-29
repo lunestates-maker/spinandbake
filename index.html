@@ -689,6 +689,24 @@
     .playlist-desc { display: none; }
     footer { padding: 3rem 1.5rem; flex-direction: column; }
     .footer-social { text-align: left; }
+    /* Dentro del @media (max-width: 768px) */
+.table-container {
+  width: 100%;
+  overflow-x: auto; /* Permite scroll horizontal si es necesario */
+  -webkit-overflow-scrolling: touch;
+}
+
+.drinks-table {
+  min-width: 400px; /* Evita que la tabla se comprima demasiado */
+}
+
+.drinks-table td, .drinks-table th {
+  padding: 0.8rem 0.5rem; /* Achicamos el padding lateral */
+}
+
+.drink-name {
+  font-size: 1.1rem; /* Un pelín más chico el nombre en móvil */
+}
   }
 </style>
 </head>
@@ -856,8 +874,12 @@
     <div class="section-title">LIQUID SETS</div>
     <div class="section-sub">Café de especialidad, seteado para que suene perfecto.</div>
   </div>
-  <div class="reveal" style="transition-delay:0.15s">
+  <div class="reveal table-container" style="transition-delay:0.15s">
     <table class="drinks-table">
+      ...
+    </table>
+</div>    
+<table class="drinks-table">
       <thead>
         <tr>
           <th>Bebida</th>
