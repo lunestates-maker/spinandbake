@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spin & Bake — café, cookies & dj</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --pink: #E8177A;
+    --pink-light: #FF5BAD;
+    --black: #080808;
+    --off-black: #111111;
+    --card-bg: #151515;
+    --white: #F5F0E8;
+    --muted: #888;
+    --border: rgba(255,255,255,0.08);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE TEXTURE ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    background-size: 200px;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.6;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem 3rem;
+    background: rgba(8,8,8,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+
+  .nav-logo-img {
+    height: 38px;
+    width: auto;
+    mix-blend-mode: screen;
+    filter: brightness(1);
+  }
+  .footer-logo-img {
+    height: 120px;
+    width: auto;
+    mix-blend-mode: screen;
+  }
+
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.6rem;
+    letter-spacing: 0.08em;
+    color: var(--pink);
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--white); }
+
+  .nav-social {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--pink);
+    letter-spacing: 0.1em;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: 8rem 3rem 4rem;
+    position: relative;
+    overflow: hidden;
+    gap: 4rem;
+  }
+
+  .hero-text { position: relative; z-index: 2; }
+
+  .hero-eyebrow {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--pink);
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .hero-eyebrow::before {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 1px;
+    background: var(--pink);
+  }
+
+  h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(5rem, 12vw, 10rem);
+    line-height: 0.9;
+    letter-spacing: 0.02em;
+    margin-bottom: 2rem;
+  }
+
+  h1 span { color: var(--pink); }
+
+  .hero-sub {
+    font-size: 1rem;
+    color: var(--muted);
+    max-width: 380px;
+    line-height: 1.8;
+    margin-bottom: 2.5rem;
+  }
+
+  .btn-primary {
+    display: inline-block;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--black);
+    background: var(--pink);
+    padding: 1rem 2rem;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.15s;
+  }
+
+  .btn-primary:hover {
+    background: var(--pink-light);
+    transform: translateY(-2px);
+  }
+
+  /* ── VINYL ── */
+  .vinyl-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+  }
+
+  .vinyl {
+    width: min(460px, 42vw);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: radial-gradient(circle at center,
+      #222 0%, #191919 15%, #111 16%,
+      #1a1a1a 30%, #111 31%,
+      #1a1a1a 50%, #111 51%,
+      #1a1a1a 70%, #111 71%,
+      #1a1a1a 85%, #0d0d0d 100%
+    );
+    box-shadow: 0 0 0 6px #1a1a1a, 0 0 60px rgba(232,23,122,0.15), 0 30px 80px rgba(0,0,0,0.8);
+    animation: spin 20s linear infinite;
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .vinyl::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    width: 28%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--pink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .vinyl-label {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    width: 28%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--pink);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 3;
+    animation: counter-spin 20s linear infinite;
+  }
+
+  .vinyl-label span:first-child {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(0.5rem, 1.5vw, 0.85rem);
+    letter-spacing: 0.1em;
+    color: var(--black);
+    line-height: 1;
+  }
+
+  .vinyl-label span:last-child {
+    font-family: 'Space Mono', monospace;
+    font-size: clamp(0.3rem, 0.8vw, 0.5rem);
+    color: rgba(0,0,0,0.6);
+    letter-spacing: 0.05em;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes counter-spin { to { transform: translate(-50%,-50%) rotate(-360deg); } }
+
+  /* ── SECTION BASE ── */
+  section {
+    padding: 6rem 3rem;
+    position: relative;
+  }
+
+  .section-tag {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--pink);
+    background: rgba(232,23,122,0.1);
+    border: 1px solid rgba(232,23,122,0.2);
+    padding: 0.3rem 0.8rem;
+    display: inline-block;
+    margin-bottom: 1rem;
+  }
+
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(3rem, 6vw, 5rem);
+    letter-spacing: 0.04em;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+  }
+
+  .section-sub {
+    font-size: 0.85rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    margin-bottom: 3.5rem;
+  }
+
+  /* ── DIVIDER ── */
+  .track-divider {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin: 0 3rem 0;
+    padding: 1.5rem 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .track-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.6rem;
+    color: rgba(232,23,122,0.5);
+    letter-spacing: 0.1em;
+    min-width: 24px;
+  }
+
+  /* ── COOKIES GRID ── */
+  #cookies { background: var(--off-black); }
+
+  .cookies-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1px;
+    border: 1px solid var(--border);
+    background: var(--border);
+  }
+
+  .cookie-card {
+    background: var(--card-bg);
+    padding: 1.8rem;
+    transition: background 0.2s;
+    cursor: default;
+  }
+
+  .cookie-card:hover { background: #1c1c1c; }
+
+  .cookie-card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.6rem;
+  }
+
+  .cookie-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.5rem;
+    letter-spacing: 0.04em;
+    line-height: 1.1;
+    flex: 1;
+    padding-right: 1rem;
+  }
+
+  .cookie-price {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.9rem;
+    color: var(--pink);
+    white-space: nowrap;
+    font-weight: 700;
+  }
+
+  .cookie-desc {
+    font-size: 0.82rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .badge-special {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.55rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    background: var(--pink);
+    color: var(--black);
+    padding: 0.2rem 0.5rem;
+    margin-left: 0.5rem;
+    vertical-align: middle;
+  }
+
+  /* ── DRINKS TABLE ── */
+  #drinks { background: var(--black); }
+
+  .drinks-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .drinks-table th {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid var(--border);
+    text-align: right;
+  }
+
+  .drinks-table th:first-child { text-align: left; }
+
+  .drinks-table td {
+    padding: 1.1rem 1rem;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.9rem;
+    transition: background 0.15s;
+  }
+
+  .drinks-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+  .drink-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.3rem;
+    letter-spacing: 0.04em;
+  }
+
+  .drink-price {
+    text-align: right;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--white);
+  }
+
+  .drink-price.na { color: rgba(255,255,255,0.15); font-size: 0.7rem; }
+
+  /* ── SOUNDCHECK ── */
+  #soundcheck { background: var(--off-black); }
+
+  .soundcheck-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .sound-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    padding: 1.5rem;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .sound-card:hover { border-color: rgba(232,23,122,0.3); }
+
+  .sound-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--pink);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s;
+  }
+
+  .sound-card:hover::before { transform: scaleX(1); }
+
+  .sound-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.4rem;
+  }
+
+  .sound-desc {
+    font-size: 0.8rem;
+    color: var(--muted);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+  }
+
+  .sound-price {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--pink);
+    font-weight: 700;
+  }
+
+  /* ── PLAYLIST / COMBOS ── */
+  #playlist { background: var(--black); }
+
+  .playlist-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border: 1px solid var(--border);
+  }
+
+  .playlist-item {
+    display: grid;
+    grid-template-columns: 60px 1fr auto auto;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 1.5rem 2rem;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
+    cursor: default;
+  }
+
+  .playlist-item:last-child { border-bottom: none; }
+  .playlist-item:hover { background: rgba(255,255,255,0.02); }
+
+  .playlist-num {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    color: rgba(232,23,122,0.4);
+    text-align: center;
+  }
+
+  .playlist-dot {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: rgba(232,23,122,0.1);
+    border: 1px solid rgba(232,23,122,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+  }
+
+  .playlist-info { flex: 1; }
+
+  .playlist-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.2rem;
+    letter-spacing: 0.04em;
+  }
+
+  .playlist-by {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.62rem;
+    color: rgba(232,23,122,0.6);
+    letter-spacing: 0.1em;
+  }
+
+  .playlist-desc {
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+
+  .playlist-price {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--pink);
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  /* ── BONUS TRACKS ── */
+  #bonus { background: var(--pink); padding: 5rem 3rem; }
+
+  #bonus .section-tag {
+    background: rgba(0,0,0,0.15);
+    border-color: rgba(0,0,0,0.2);
+    color: var(--black);
+  }
+
+  #bonus .section-title { color: var(--black); }
+  #bonus .section-sub { color: rgba(0,0,0,0.6); }
+
+  .bonus-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .bonus-card {
+    background: rgba(0,0,0,0.12);
+    border: 1px solid rgba(0,0,0,0.15);
+    padding: 1.8rem;
+  }
+
+  .bonus-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .bonus-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem;
+    letter-spacing: 0.04em;
+    color: var(--black);
+    margin-bottom: 0.4rem;
+  }
+
+  .bonus-desc {
+    font-size: 0.8rem;
+    color: rgba(0,0,0,0.6);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+  }
+
+  .bonus-price {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--black);
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--off-black);
+    border-top: 1px solid var(--border);
+    padding: 4rem 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 2rem;
+  }
+
+  .footer-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3.5rem;
+    letter-spacing: 0.06em;
+    color: var(--pink);
+    line-height: 1;
+  }
+
+  .footer-sub {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--muted);
+    letter-spacing: 0.15em;
+    margin-top: 0.3rem;
+  }
+
+  .footer-social {
+    text-align: right;
+  }
+
+  .footer-social a {
+    display: block;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: 0.1em;
+    transition: color 0.2s;
+    margin-bottom: 0.3rem;
+  }
+
+  .footer-social a:hover { color: var(--pink); }
+
+  /* ── SCROLL REVEAL ── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* ── TICKER ── */
+  .ticker {
+    overflow: hidden;
+    background: var(--pink);
+    padding: 0.75rem 0;
+    white-space: nowrap;
+  }
+
+  .ticker-inner {
+    display: inline-flex;
+    animation: ticker 18s linear infinite;
+  }
+
+  .ticker-inner span {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1rem;
+    letter-spacing: 0.15em;
+    color: var(--black);
+    padding: 0 2rem;
+  }
+
+  .ticker-inner span::before {
+    content: '● ';
+    color: rgba(0,0,0,0.4);
+  }
+
+  @keyframes ticker {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    .hero { grid-template-columns: 1fr; padding: 7rem 1.5rem 3rem; gap: 3rem; text-align: center; }
+    .hero-eyebrow { justify-content: center; }
+    .vinyl { width: 260px; }
+    section { padding: 4rem 1.5rem; }
+    .track-divider { margin: 0 1.5rem; }
+    .playlist-item { grid-template-columns: 40px 1fr auto; gap: 1rem; padding: 1.2rem; }
+    .playlist-desc { display: none; }
+    footer { padding: 3rem 1.5rem; flex-direction: column; }
+    .footer-social { text-align: left; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Spin & Bake</div>
+  <ul class="nav-links">
+    <li><a href="#cookies">Cookies</a></li>
+    <li><a href="#drinks">Drinks</a></li>
+    <li><a href="#soundcheck">Salados</a></li>
+    <li><a href="#playlist">Combos</a></li>
+    <li><a href="#bonus">Merch</a></li>
+  </ul>
+  <div class="nav-social">@spinandbake</div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-text reveal">
+    <div class="hero-eyebrow">café, cookies &amp; dj</div>
+    <h1>SPIN<br>&amp;<br><span>BAKE</span></h1>
+    <p class="hero-sub">Un refugio analógico y sensorial en el medio de la ciudad. Donde la curaduría musical en formato vinilo se cruza con el confort absoluto de una cookie XL recién horneada.</p>
+    <a href="#cookies" class="btn-primary">Ver el menú</a>
+  </div>
+  <div class="vinyl-wrap reveal" style="transition-delay:0.2s">
+    <div class="vinyl">
+      <div class="vinyl-label">
+        <span>SPIN & BAKE</span>
+        <span>café, cookies & dj</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-inner">
+    <span>Salted Caramel Choco</span>
+    <span>Marshmallow Cloud</span>
+    <span>Red Velvet</span>
+    <span>Blueberry Heaven</span>
+    <span>Twix Vibe</span>
+    <span>Wafer KitKat</span>
+    <span>White Choco Macadamia</span>
+    <span>Cold Brew</span>
+    <span>Flat White</span>
+    <span>Matcha</span>
+    <span>Espresso</span>
+    <span>Salted Caramel Choco</span>
+    <span>Marshmallow Cloud</span>
+    <span>Red Velvet</span>
+    <span>Blueberry Heaven</span>
+    <span>Twix Vibe</span>
+    <span>Wafer KitKat</span>
+    <span>White Choco Macadamia</span>
+    <span>Cold Brew</span>
+    <span>Flat White</span>
+    <span>Matcha</span>
+    <span>Espresso</span>
+  </div>
+</div>
+
+<!-- LADO A — COOKIES -->
+<section id="cookies">
+  <div class="reveal">
+    <div class="section-tag">Lado A</div>
+    <div class="section-title">THE SUGAR TRACKS</div>
+    <div class="section-sub">Nuestras cookies son tamaño XL al tamaño del vinilo.</div>
+  </div>
+  <div class="cookies-grid reveal" style="transition-delay:0.15s">
+    <div class="cookie-card">
+      <div class="cookie-card-head">
+        <div class="cookie-name">Salted Caramel Choco</div>
+        <div class="cookie-price">$7.000</div>
+      </div>
+      <div class="cookie-desc">Masa de cacao intenso, caramelo salado y pizcas de sal.</div>
+    </div>
+    <div class="cookie-card">
+      <div class="cookie-card-head">
+        <div class="cookie-name">Marshmallow Cloud <span class="badge-special">especial</span></div>
+        <div class="cookie-price">$9.000</div>
+      </div>
+      <div class="cookie-desc">Masa de vainilla, chips de chocolate y un malvavisco.</div>
+    </div>
+    <div class="cookie-card">
+      <div class="cookie-card-head">
+        <div class="cookie-name">Red Velvet</div>
+        <div class="cookie-price">$7.000</div>
+      </div>
+      <div class="cookie-desc">El clásico de terciopelo rojo con centro cremoso de cheesecake.</div>
+    </div>
+    <div class="cookie-card">
+      <div class="cookie-card-head">
+        <div class="cookie-name">Blueberry Heaven</div>
+        <div class="cookie-price">$7.000</div>
+      </div>
+      <div class="cookie-desc">Masa suave, arándanos reales y un toque cítrico de limón.</div>
+    </div>
+    <div class="cookie-card">
+      <div class="cookie-card-head">
+        <div class="cookie-name">Twix Vibe</div>
+        <div class="cookie-price">$7.000</div>
+      </div>
+      <div class="cookie-desc">Base crocante, capa de caramelo artesanal y baño de chocolate.</div>
+    </div>
+    <div class="cookie-card">
+      <div class="cookie-card-head">
+        <div class="cookie-name">Wafer Cookie ft. KitKat <span class="badge-special">especial</span></div>
+        <div class="cookie-price">$9.000</div>
+      </div>
+      <div class="cookie-desc">Chocolate de leche premium y pedazos de KitKat.</div>
+    </div>
+    <div class="cookie-card">
+      <div class="cookie-card-head">
+        <div class="cookie-name">White Choco &amp; Macadamia</div>
+        <div class="cookie-price">$6.000</div>
+      </div>
+      <div class="cookie-desc">Chocolate blanco premium y nueces de macadamia tostadas.</div>
+    </div>
+  </div>
+</section>
+
+<!-- LADO B — DRINKS -->
+<section id="drinks">
+  <div class="reveal">
+    <div class="section-tag">Lado B</div>
+    <div class="section-title">LIQUID SETS</div>
+    <div class="section-sub">Café de especialidad, seteado para que suene perfecto.</div>
+  </div>
+  <div class="reveal" style="transition-delay:0.15s">
+    <table class="drinks-table">
+      <thead>
+        <tr>
+          <th>Bebida</th>
+          <th>S</th>
+          <th>M</th>
+          <th>L</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><div class="drink-name">Espresso / Americano</div></td>
+          <td class="drink-price">$2.700</td>
+          <td class="drink-price">$4.400</td>
+          <td class="drink-price na">—</td>
+        </tr>
+        <tr>
+          <td><div class="drink-name">Flat White</div></td>
+          <td class="drink-price">$3.400</td>
+          <td class="drink-price">$4.400</td>
+          <td class="drink-price">$4.900</td>
+        </tr>
+        <tr>
+          <td><div class="drink-name">Iced Latte</div></td>
+          <td class="drink-price">$3.400</td>
+          <td class="drink-price">$4.400</td>
+          <td class="drink-price">$4.900</td>
+        </tr>
+        <tr>
+          <td><div class="drink-name">Matcha</div></td>
+          <td class="drink-price na">—</td>
+          <td class="drink-price">$4.700</td>
+          <td class="drink-price">$4.900</td>
+        </tr>
+        <tr>
+          <td><div class="drink-name">Cold Brew</div></td>
+          <td class="drink-price">$2.700</td>
+          <td class="drink-price">$4.400</td>
+          <td class="drink-price na">—</td>
+        </tr>
+        <tr>
+          <td><div class="drink-name">Capuccino</div></td>
+          <td class="drink-price na">—</td>
+          <td class="drink-price">$4.700</td>
+          <td class="drink-price">$4.900</td>
+        </tr>
+        <tr>
+          <td><div class="drink-name">Mocaccino</div></td>
+          <td class="drink-price na">—</td>
+          <td class="drink-price">$4.700</td>
+          <td class="drink-price">$4.900</td>
+        </tr>
+        <tr>
+          <td><div class="drink-name">Limonada</div></td>
+          <td class="drink-price na">—</td>
+          <td class="drink-price na">—</td>
+          <td class="drink-price">$3.900</td>
+        </tr>
+        <tr>
+          <td><div class="drink-name">Aguas / Gaseosas</div></td>
+          <td class="drink-price na">—</td>
+          <td class="drink-price na">—</td>
+          <td class="drink-price">$3.900</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- SOUNDCHECK — SALADOS -->
+<section id="soundcheck">
+  <div class="reveal">
+    <div class="section-tag">Especial</div>
+    <div class="section-title">SOUNDCHECK</div>
+    <div class="section-sub">Para cortar con el dulce o arrancar el día.</div>
+  </div>
+  <div class="soundcheck-grid reveal" style="transition-delay:0.15s">
+    <div class="sound-card">
+      <div class="sound-name">Tostado Clásico</div>
+      <div class="sound-desc">Jamón natural y queso fundido en pan de masa madre.</div>
+      <div class="sound-price">$11.500</div>
+    </div>
+    <div class="sound-card">
+      <div class="sound-name">Avocado Toast</div>
+      <div class="sound-desc">Palta pisada, toque de limón y huevo sobre pan de campo.</div>
+      <div class="sound-price">$12.000</div>
+    </div>
+    <div class="sound-card">
+      <div class="sound-name">Chipá Calentito</div>
+      <div class="sound-desc">Porción de 4 unidades con mucho queso y centro chicloso.</div>
+      <div class="sound-price">$9.000</div>
+    </div>
+    <div class="sound-card">
+      <div class="sound-name">Grilled Cheese</div>
+      <div class="sound-desc">Blend de quesos bien derretidos en pan de masa madre tostado.</div>
+      <div class="sound-price">$12.700</div>
+    </div>
+    <div class="sound-card">
+      <div class="sound-name">Croissant Rellena</div>
+      <div class="sound-desc">Masa hojaldrada, tibia y rellena de jamón y queso.</div>
+      <div class="sound-price">$6.500</div>
+    </div>
+    <div class="sound-card">
+      <div class="sound-name">Medialunas (x2)</div>
+      <div class="sound-desc">De manteca, clásicas y con el almíbar justo.</div>
+      <div class="sound-price">$4.500</div>
+    </div>
+  </div>
+</section>
+
+<!-- ARMÁ TU PLAYLIST — COMBOS -->
+<section id="playlist">
+  <div class="reveal">
+    <div class="section-tag">Combos</div>
+    <div class="section-title">ARMÁ TU PLAYLIST</div>
+    <div class="section-sub">Sets armados para sonar bien.</div>
+  </div>
+  <div class="playlist-list reveal" style="transition-delay:0.15s">
+    <div class="playlist-item">
+      <div class="playlist-num">01</div>
+      <div style="display:flex;align-items:center;gap:1rem;flex:1;min-width:0;">
+        <div>
+          <div class="playlist-title">Espresso.mp3</div>
+          <div class="playlist-by">by Sabrina Carpenter</div>
+        </div>
+      </div>
+      <div class="playlist-desc">Cookie a elección + un Espresso</div>
+      <div class="playlist-price">$8.500</div>
+    </div>
+    <div class="playlist-item">
+      <div class="playlist-num">02</div>
+      <div style="display:flex;align-items:center;gap:1rem;flex:1;min-width:0;">
+        <div>
+          <div class="playlist-title">Sugar.mp3</div>
+          <div class="playlist-by">by Maroon 5</div>
+        </div>
+      </div>
+      <div class="playlist-desc">Dos Cookies + un Mocaccino</div>
+      <div class="playlist-price">$12.000</div>
+    </div>
+    <div class="playlist-item">
+      <div class="playlist-num">03</div>
+      <div style="display:flex;align-items:center;gap:1rem;flex:1;min-width:0;">
+        <div>
+          <div class="playlist-title">Cookie.mp3</div>
+          <div class="playlist-by">by New Jeans</div>
+        </div>
+      </div>
+      <div class="playlist-desc">4 Mini Cookies a elección</div>
+      <div class="playlist-price">$14.000</div>
+    </div>
+    <div class="playlist-item">
+      <div class="playlist-num">04</div>
+      <div style="display:flex;align-items:center;gap:1rem;flex:1;min-width:0;">
+        <div>
+          <div class="playlist-title">Coffee.mp3</div>
+          <div class="playlist-by">by Chappell Roan</div>
+        </div>
+      </div>
+      <div class="playlist-desc">Un Cold Brew + Dos Medialunas</div>
+      <div class="playlist-price">$6.700</div>
+    </div>
+    <div class="playlist-item">
+      <div class="playlist-num">05</div>
+      <div style="display:flex;align-items:center;gap:1rem;flex:1;min-width:0;">
+        <div>
+          <div class="playlist-title">Red Flavor.mp3</div>
+          <div class="playlist-by">by Red Velvet</div>
+        </div>
+      </div>
+      <div class="playlist-desc">Limonada de Frutos Rojos + Cookie Red Velvet</div>
+      <div class="playlist-price">$11.500</div>
+    </div>
+  </div>
+</section>
+
+<!-- BONUS TRACKS — MERCH -->
+<section id="bonus">
+  <div class="reveal">
+    <div class="section-tag">Especial</div>
+    <div class="section-title" style="color:var(--black)">BONUS TRACKS</div>
+    <div class="section-sub" style="color:rgba(0,0,0,0.5)">Para compartir o recordar en todo lugar.</div>
+  </div>
+  <div class="bonus-grid reveal" style="transition-delay:0.15s">
+    <div class="bonus-card">
+      <div class="bonus-icon">💿</div>
+      <div class="bonus-title">Record Menu-Card y Coasters</div>
+      <div class="bonus-desc">Una tarjeta de menú en formato de disco de vinilo y un par de posavasos a juego.</div>
+      <div class="bonus-price">$14.000</div>
+    </div>
+    <div class="bonus-card">
+      <div class="bonus-icon">🍪</div>
+      <div class="bonus-title">Tasting Session</div>
+      <div class="bonus-desc">Caja de 4 cookies surtidas + Plancha de stickers de regalo.</div>
+      <div class="bonus-price">$28.000</div>
+    </div>
+    <div class="bonus-card">
+      <div class="bonus-icon">🛍</div>
+      <div class="bonus-title">Tote Bag Deluxe Bundle</div>
+      <div class="bonus-desc">Caja de 4 cookies surtidas + 1 totebag de diseño.</div>
+      <div class="bonus-price">$31.000</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="footer-logo">SPIN &amp; BAKE</div>
+    <div class="footer-sub">café, cookies &amp; dj</div>
+  </div>
+  <div class="footer-social">
+    <a href="#">@spinandbake</a>
+    <a href="#">@spinandbake.SC</a>
+  </div>
+</footer>
+
+<script>
+const reveals = document.querySelectorAll('.reveal');
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+}, { threshold: 0.1 });
+reveals.forEach(el => io.observe(el));
+</script>
+</body>
+</html>
