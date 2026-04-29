@@ -676,7 +676,7 @@
     100% { transform: translateX(-50%); }
   }
 
-  /* ── RESPONSIVE ── */
+ /* ── RESPONSIVE (Reemplazá tu @media con este) ── */
   @media (max-width: 768px) {
     nav { padding: 1rem 1.5rem; }
     .nav-links { display: none; }
@@ -687,26 +687,49 @@
     .track-divider { margin: 0 1.5rem; }
     .playlist-item { grid-template-columns: 40px 1fr auto; gap: 1rem; padding: 1.2rem; }
     .playlist-desc { display: none; }
-    footer { padding: 3rem 1.5rem; flex-direction: column; }
-    .footer-social { text-align: left; }
-    /* Dentro del @media (max-width: 768px) */
-.table-container {
-  width: 100%;
-  overflow-x: auto; /* Permite scroll horizontal si es necesario */
-  -webkit-overflow-scrolling: touch;
-}
+    
+    /* Ajustes nuevos para la Tabla en móviles */
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      margin: 0 -1.5rem; /* Hace que el scroll llegue hasta el borde de la pantalla */
+      padding: 0 1.5rem; /* Mantiene el contenido alineado */
+    }
+    
+    .drinks-table {
+      min-width: 480px; /* Un poco más ancha para evitar saltos de línea */
+    }
+    
+    .drinks-table td, .drinks-table th {
+      padding: 0.8rem 0.6rem;
+    }
+    
+    .drink-name {
+      font-size: 1.15rem;
+      white-space: nowrap; /* Evita que los nombres largos (ej. Espresso/Americano) bajen de línea */
+    }
 
-.drinks-table {
-  min-width: 400px; /* Evita que la tabla se comprima demasiado */
-}
-
-.drinks-table td, .drinks-table th {
-  padding: 0.8rem 0.5rem; /* Achicamos el padding lateral */
-}
-
-.drink-name {
-  font-size: 1.1rem; /* Un pelín más chico el nombre en móvil */
-}
+    /* Ajustes nuevos para centrar el Footer en móviles */
+    footer { 
+      padding: 4rem 1.5rem; 
+      flex-direction: column; 
+      align-items: center; /* Centra horizontalmente */
+      text-align: center; /* Centra el texto */
+      gap: 3rem; /* Espacio entre el logo y las redes */
+    }
+    
+    .footer-sub {
+      margin-top: 1rem; /* Separa un poco el subtítulo del logo */
+    }
+    
+    .footer-social { 
+      text-align: center; /* Centra las redes sociales */
+    }
+    
+    .footer-social a {
+      margin-bottom: 0.8rem; /* Separa los links un poco más para que sean fáciles de tocar */
+    }
   }
 </style>
 </head>
